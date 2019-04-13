@@ -127,9 +127,13 @@
                     {"Crime":"All Crimes","Year":"2015","Count":288279}]
             };
         
+    var allArray = [crime15, crime16];
         
+    attrArray = ["2016", "2015"]
+        
+       
     setBubble(crime16);
-    updateBubble(crime15);
+    createDropdown(allArray);
         
 
     function setBubble(dataset){
@@ -212,6 +216,43 @@
                 .style("height", diameter + "px");
     }
         
+
+        function createDropdown(allArray){
+            //add select element
+            var dropdown = d3.select("#menuHolder")
+                .append("select")
+                .attr("class", "dropdown")
+                .on("change", function(){
+                    console.log(this.value);
+                    getValue(this.value, allArray)
+                });
+
+            //add initial option
+            var titleOption = dropdown.append("option")
+                .attr("class", "titleOption")
+                .attr("disabled", "true")
+                .text("Select Year");
+
+            //add attribute name options
+            var attrOptions = dropdown.selectAll("attrOptions")
+                .data(attrArray)
+                .enter()
+                .append("option")
+                .attr("value", function(d){ return d })
+                .text(function(d){ return d });
+        };
+        
+        function getValue (year, allArray){
+        for (var i=0; i<allArray.length; i++){
+            var crimeArray = allArray[i]; //holds value of individual crime arrays
+            var testYear = crimeArray.children[0].Year; //holds value of year associated with the crime array
+            if (testYear == year){ //if year of array is equal to year from dropdown, run update function on that array
+                updateBubble(crimeArray);
+            };
+        };
+    };
+    
+        
     function updateBubble (dataset){
         d3.select("svg").remove();
         
@@ -293,9 +334,9 @@
 
             d3.select(self.frameElement)
                 .style("height", diameter + "px");
-    }
+    };
 
-	});
+});
 
 
     
