@@ -104,4 +104,9 @@ h3 {
 .info:hover {
 	text-decoration: underline;;
 }
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
 

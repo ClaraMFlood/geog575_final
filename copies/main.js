@@ -148,7 +148,7 @@
                 .size([diameter, diameter])
                 .padding(1.5);
 
-            var svg = d3.select("#bubbleHolder")
+            var svg = d3.select("#allcrimeDialog")
                 .append("svg")
                 .attr("width", diameter)
                 .attr("height", diameter)
@@ -256,13 +256,7 @@
     
         
     function updateBubble (dataset){
-              // transition
-      var t = d3.transition()
-          .duration(750);
-
-        
-        d3.select(".bubble")
-            .remove();
+        d3.select("svg").remove();
         
         console.log(dataset.children[0].Year);
             var diameter = (window.innerWidth * .25);
@@ -274,7 +268,7 @@
                 .size([diameter, diameter])
                 .padding(1.5);
 
-            var svg = d3.select("#bubbleHolder")
+            var svg = d3.select("#allcrimeDialog")
                 .append("svg")
                 .attr("width", diameter)
                 .attr("height", diameter)
@@ -312,7 +306,6 @@
                 .attr("r", function(d) {
                     return d.r;
                 })
-                .transition(t)
                 .style("fill", function(d,i) {
                     return color(i);
                 });
@@ -320,7 +313,6 @@
             node.append("text")
                 .attr("dy", ".2em")
                 .style("text-anchor", "middle")
-                .transition(t)
                 .text(function(d) {
                     return d.data.Crime.substring(0, d.r / 3);
                 })
@@ -333,7 +325,6 @@
             node.append("text")
                 .attr("dy", "1.3em")
                 .style("text-anchor", "middle")
-                .transition(t)
                 .text(function(d) {
                     return d.data.Count;
                 })
@@ -348,7 +339,7 @@
     };
         
 
-//    var allGroup = ["HOMICIDE", "BURGLARY", "NARCOTICS"]
+    var allGroup = ["NARCOTICS", "BURGLARY", "HOMICIDE"]
         
         
     function linegraph () {    
@@ -356,7 +347,28 @@
         var margin = {top: 20, right: 20, bottom: 30, left: 50},
             width = 960 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
-      
+    
+
+        // set the ranges
+        var x = d3.scaleTime().range([0, width]);
+        var y = d3.scaleLinear().range([height, 0]);
+
+        // define the line
+        var valueline = d3.line()
+            .x(function(d) { return x(d.YEAR); })
+            .y(function(d) { return y(d.HOMICIDE); });
+        // define the line
+        var valueline2 = d3.line()
+            .x(function(d) { return x(d.YEAR); })
+            .y(function(d) { return y(d.BURGLARY); });
+        // define the line
+        var valueline3 = d3.line()
+            .x(function(d) { return x(d.YEAR); })
+            .y(function(d) { return y(d.NARCOTICS); });
+
+        // append the svg obgect to the body of the page
+        // appends a 'group' element to 'svg'
+        // moves the 'group' element to the top left margin
         var svg = d3.select("#allcrimeDialog")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -364,82 +376,84 @@
             .append("g")
             .attr("transform",
                   "translate(" + margin.left + "," + margin.top + ")");
-    
 
-            //Read the data
-            d3.csv("data/data.csv", function(data) {
+        // Get the data
+        d3.csv("data/data.csv", function(error, data) {
+          if (error) throw error;
 
-                // List of groups (here I have one group per column)
-                var allGroup = ["HOMICIDE", "BURGLARY", "NARCOTICS"]
+          // Scale the range of the data
+          x.domain(d3.extent(data, function(d) { return d.YEAR; }));
+          y.domain([0, d3.max(data, function(d) {
+	       return Math.max(d.HOMICIDE, d.BURGLARY, d.NARCOTICS); })]);
 
-                // add the options to the button
-                d3.select("#selectButton")
-                  .selectAll('myOptions')
-                  .data(allGroup)
-                  .enter()
-                  .append('option')
-                  .text(function (d) { return d; }) // text showed in the menu
-                  .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
-                // A color scale: one color for each group
-                var myColor = d3.scaleOrdinal()
-                  .domain(allGroup)
-                  .range(d3.schemeSet2);
+          // Add the valueline path.
+          svg.append("path")
+              .data([data])
+              .attr("class", "line")
+              .attr("d", valueline);
 
-                // Add X axis --> it is a date format
-                var x = d3.scaleLinear()
-                  .domain([2005,2016])
-                  .range([ 0, width ]);
-                svg.append("g")
-                  .attr("transform", "translate(0," + height + ")")
-                  .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+          // Add the valueline2 path.
+          svg.append("path")
+              .data([data])
+              .attr("class", "line")
+              .style("stroke", "red")
+              .attr("d", valueline2);
+            
+        // Add the valueline2 path.
+          svg.append("path")
+              .data([data])
+              .attr("class", "line")
+              .style("stroke", "green")
+              .attr("d", valueline3);
 
-                // Add Y axis
-                var y = d3.scaleLinear()
-                  .domain( [0,23000])
-                  .range([ height, 0 ]);
-                svg.append("g")
-                  .call(d3.axisLeft(y));
+          // Add the X Axis
+          svg.append("g")
+              .attr("transform", "translate(0," + height + ")")
+              .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
-                // Initialize line with group a
-                var line = svg
-                  .append('g')
-                  .append("path")
-                    .datum(data)
-                    .attr("d", d3.line()
-                      .x(function(d) { return x(+d.YEAR) })
-                      .y(function(d) { return y(+d.HOMICIDE) })
-                    )
-                    .attr("stroke", function(d){ return myColor("HOMICIDE") })
-                    .style("stroke-width", 4)
-                    .style("fill", "none")
-
-                // A function that update the chart
-                function update(selectedGroup) {
-
-                  // Create new data with the selection?
-                  var dataFilter = data.map(function(d){return {YEAR: d.YEAR, value:d[selectedGroup]} })
-
-                  // Give these new data to update line
-                  line
-                      .datum(dataFilter)
-                      .transition()
-                      .duration(1000)
-                      .attr("d", d3.line()
-                        .x(function(d) { return x(+d.YEAR) })
-                        .y(function(d) { return y(+d.value) })
-                      )
-                      .attr("stroke", function(d){ return myColor(selectedGroup) })
-                }
-
-                // When the button is changed, run the updateChart function
-                d3.select("#selectButton").on("change", function(d) {
-                    // recover the option that has been chosen
-                    var selectedOption = d3.select(this).property("value")
-                    // run the updateChart function with this selected option
-                    update(selectedOption)
-                });
+          // Add the Y Axis
+          svg.append("g")
+              .call(d3.axisLeft(y));
 
         });
-    }
+        
+            // From https://bl.ocks.org/mbostock/5649592
+    function transition(path) {
+            path.transition()
+                .duration(2000)
+                .attrTween("stroke-dasharray", tweenDash);
+        }
+        function tweenDash() {
+            var l = this.getTotalLength(),
+                i = d3.interpolateString("0," + l, l + "," + l);
+            return function (t) { return i(t); };
+        }
+
+    };
+        
+//    function crimeDropdown(){
+//        
+//           // List of groups (here I have one group per column)
+//        
+//
+//        // add the options to the button
+//        d3.select("#selectButton")
+//          .selectAll('myOptions')
+//          .data(allGroup)
+//          .enter()
+//          .append('option')
+//          .text(function (d) { return d; }) // text showed in the menu
+//          .attr("Crime", function (d) { return d; }) // corresponding value returned by the button
+//        
+//    };
+
 });
+
+
+    
+    
+    
+    
+    
+
