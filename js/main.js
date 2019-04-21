@@ -10,7 +10,7 @@
 		$("#allcrimeDialog").dialog({
 			autoOpen: false,
             width: (window.innerWidth * .8), //changed
-            height: (window.innerHeight *.5) //changed
+            height: (window.innerHeight *.8) //changed
 		});
 		$("#burgDialog").dialog({
 			autoOpen: false
@@ -113,23 +113,46 @@
         
         //chart code added onto Douglas' base map
         //objects inside array inside object?
+        
+        function numberWithCommas(x) {
+           return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
         var crime16 = {
-                "children": [{"Crime":"Narcotics","Year":"2016","Count":16345},
-                    {"Crime":"Homicides","Year":"2016","Count":193},
-                    {"Crime":"Assault","Year":"2016","Count":22234},
-                    {"Crime":"All Crimes","Year":"2016","Count":301413}]
+                "children": [{"Crime":"Narcotics","Year":"2016","Count":16345}, {"Crime":"Homicides","Year":"2016","Count":193},{"Crime":"Assault","Year":"2016","Count":22234},{"Crime":"Burglary","Year":"2016","Count":13048},{"Crime":"Arson","Year":"2016","Count":536},{"Crime":"Alcohol Related","Year":"2016","Count":4126},
+                {"Crime":"Federal Offense","Year":"2016","Count":676},
+                {"Crime":"Misc. Felonies","Year":"2016","Count":3171},
+                {"Crime":"Sex Offense","Year":"2016","Count":2662}, {"Crime":"Gambling","Year":"2016","Count":27},
+                {"Crime":"Grand Theft Auto","Year":"2016","Count":12885},
+                {"Crime":"Mentally Ill","Year":"2016","Count":3770}, {"Crime":"Robbery","Year":"2016","Count":40539}, {"Crime":"Suicide","Year":"2016","Count":1025}, {"Crime":"Vagrancy","Year":"2016","Count":384}, {"Crime":"Vandalism","Year":"2016","Count":12597},
+                {"Crime":"Vehicle Laws","Year":"2016","Count":21693},
+                {"Crime":"Weapon Laws","Year":"2016","Count":3685}]
             };
     
         var crime15 = {
-                "children": [{"Crime":"Narcotics","Year":"2015","Count":14644},
-                    {"Crime":"Homicides","Year":"2015","Count":178},
-                    {"Crime":"Assault","Year":"2015","Count":20990},
-                    {"Crime":"All Crimes","Year":"2015","Count":288279}]
+                "children": [{"Crime":"Narcotics","Year":"2015","Count":14644}, {"Crime":"Homicides","Year":"2015","Count":178},{"Crime":"Assault","Year":"2015","Count":20990},{"Crime":"Burglary","Year":"2015","Count":12971},{"Crime":"Arson","Year":"2015","Count":477},{"Crime":"Alcohol Related","Year":"2015","Count":4001},
+                {"Crime":"Federal Offense","Year":"2015","Count":493},
+                {"Crime":"Misc. Felonies","Year":"2015","Count":3369},
+                {"Crime":"Sex Offense","Year":"2015","Count":2183}, {"Crime":"Gambling","Year":"2015","Count":15},
+                {"Crime":"Grand Theft Auto","Year":"2015","Count":12221},
+                {"Crime":"Mentally Ill","Year":"2015","Count":3754}, {"Crime":"Robbery","Year":"2015","Count":37720}, {"Crime":"Suicide","Year":"2015","Count":1041}, {"Crime":"Vagrancy","Year":"2015","Count":429}, {"Crime":"Vandalism","Year":"2015","Count":11686},
+                {"Crime":"Vehicle Laws","Year":"2015","Count":21875},
+                {"Crime":"Weapon Laws","Year":"2015","Count":3380}]
             };
         
-    var allArray = [crime15, crime16];
+        var crime14 = {
+                "children": [{"Crime":"Narcotics","Year":"2014","Count":14644}, {"Crime":"Homicides","Year":"2014","Count":178},{"Crime":"Assault","Year":"2014","Count":20990},{"Crime":"Burglary","Year":"2014","Count":12971},{"Crime":"Arson","Year":"2014","Count":477},{"Crime":"Alcohol Related","Year":"2014","Count":4001},
+                {"Crime":"Federal Offense","Year":"2014","Count":493},
+                {"Crime":"Misc. Felonies","Year":"2014","Count":3369},
+                {"Crime":"Sex Offense","Year":"2014","Count":2183}, {"Crime":"Gambling","Year":"2014","Count":15},
+                {"Crime":"Grand Theft Auto","Year":"2014","Count":12221},
+                {"Crime":"Mentally Ill","Year":"2014","Count":3754}, {"Crime":"Robbery","Year":"2014","Count":37720}, {"Crime":"Suicide","Year":"2014","Count":1041}, {"Crime":"Vagrancy","Year":"2014","Count":429}, {"Crime":"Vandalism","Year":"2014","Count":11686},
+                {"Crime":"Vehicle Laws","Year":"2014","Count":21875},
+                {"Crime":"Weapon Laws","Year":"2014","Count":3380}]
+            };
         
-    attrArray = ["2016", "2015"]
+    var allArray = [crime14, crime15, crime16],
+    attrArray = ["2016", "2015", "2014"];
         
        
     setBubble(crime16);
@@ -139,10 +162,10 @@
         
 
     function setBubble(dataset){
-            var diameter = (window.innerWidth * .25);
+            var diameter = (window.innerWidth * .5);
 
             var color = d3.scaleOrdinal()
-                .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410", "#330"]);
+                .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410", "#451410"]);
 
             var bubble = d3.pack(dataset)
                 .size([diameter, diameter])
@@ -176,6 +199,7 @@
                 .attr("transform", function(d) {
                     return "translate(" + d.x + "," + d.y + ")";
                 });
+        console.log(node);
 
             node.append("title")
                 .text(function(d) {
@@ -194,7 +218,7 @@
                 .attr("dy", ".2em")
                 .style("text-anchor", "middle")
                 .text(function(d) {
-                    return d.data.Crime.substring(0, d.r / 3);
+                    return d.data.Crime.substring(0, d.r / 1.5);
                 })
                 .attr("font-family", "sans-serif")
                 .attr("font-size", function(d){
@@ -206,7 +230,7 @@
                 .attr("dy", "1.3em")
                 .style("text-anchor", "middle")
                 .text(function(d) {
-                    return d.data.Count;
+                    return numberWithCommas(d.data.Count);
                 })
                 .attr("font-family",  "Gill Sans", "Gill Sans MT")
                 .attr("font-size", function(d){
@@ -225,7 +249,7 @@
                 .append("select")
                 .attr("class", "dropdown")
                 .on("change", function(){
-                    console.log(this.value);
+                    //console.log(this.value);
                     getValue(this.value, allArray)
                 });
 
@@ -264,11 +288,11 @@
         d3.select(".bubble")
             .remove();
         
-        console.log(dataset.children[0].Year);
-            var diameter = (window.innerWidth * .25);
+        //console.log(dataset.children[0].Year);
+            var diameter = (window.innerWidth * .5);
 
             var color = d3.scaleOrdinal()
-                .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410", "#330"]);
+                .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410"]);
 
             var bubble = d3.pack(dataset)
                 .size([diameter, diameter])
@@ -335,7 +359,7 @@
                 .style("text-anchor", "middle")
                 .transition(t)
                 .text(function(d) {
-                    return d.data.Count;
+                    return numberWithCommas(d.data.Count);
                 })
                 .attr("font-family",  "Gill Sans", "Gill Sans MT")
                 .attr("font-size", function(d){
@@ -354,10 +378,12 @@
     function linegraph () {    
         // set the dimensions and margins of the graph
         var margin = {top: 20, right: 20, bottom: 30, left: 50},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            //width = 960 - margin.left - margin.right,
+            //height = 500 - margin.top - margin.bottom,
+            width = window.innerWidth * .5,
+            height = window.innerHeight * .5;
       
-        var svg = d3.select("#allcrimeDialog")
+        var svg = d3.select("#chartHolder")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -370,8 +396,8 @@
             d3.csv("data/data.csv", function(data) {
 
                 // List of groups (here I have one group per column)
-                var allGroup = ["HOMICIDE", "BURGLARY", "NARCOTICS"]
-
+                var allGroup = ["HOMICIDE", "BURGLARY", "NARCOTICS", "ASSAULT", "ALCOHOL_RELATED", "FEDERAL_OFFENSE", "FELONIES_MISC", "SEX_OFFENSE", "GAMBLING", "GRAND_THEFT_AUTO", "MENTALLY_ILL", "ROBBERY", "SUICIDE", "VAGRANCY", "VANDALISM", "VEHICLE_BOAT_LAWS", "WEAPONS_LAWS", "ALL_CRIMES"]
+                
                 // add the options to the button
                 d3.select("#selectButton")
                   .selectAll('myOptions')
@@ -380,11 +406,15 @@
                   .append('option')
                   .text(function (d) { return d; }) // text showed in the menu
                   .attr("value", function (d) { return d; }) // corresponding value returned by the button
-
+                
+//                
+                
                 // A color scale: one color for each group
                 var myColor = d3.scaleOrdinal()
                   .domain(allGroup)
-                  .range(d3.schemeSet2);
+                  .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410"]);
+                
+                
 
                 // Add X axis --> it is a date format
                 var x = d3.scaleLinear()
@@ -393,10 +423,10 @@
                 svg.append("g")
                   .attr("transform", "translate(0," + height + ")")
                   .call(d3.axisBottom(x).tickFormat(d3.format("d")));
-
+                
                 // Add Y axis
                 var y = d3.scaleLinear()
-                  .domain( [0,23000])
+                  .domain( [0,350])
                   .range([ height, 0 ]);
                 svg.append("g")
                   .call(d3.axisLeft(y));
@@ -416,10 +446,38 @@
 
                 // A function that update the chart
                 function update(selectedGroup) {
-
+                    
+                    var expressed = selectedGroup;
+                   
+                    var max = d3.max(data, function(d){
+                        return + parseFloat(d[expressed])
+                    });
+                
+                        
                   // Create new data with the selection?
                   var dataFilter = data.map(function(d){return {YEAR: d.YEAR, value:d[selectedGroup]} })
+                  
+                  
+                  //remove current axis tick marks                  
+                  d3.selectAll(".tick")
+                    .remove();
+                    
+                    // Add X axis --> it is a date format
+                    var x = d3.scaleLinear()
+                      .domain([2005,2016])
+                      .range([ 0, width ]);
+                    svg.append("g")
+                      .attr("transform", "translate(0," + height + ")")
+                      .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+                    
+                    // Update Y axis
+                    y = d3.scaleLinear()
+                      .domain( [0,max])
+                      .range([ height, 0 ]);
+                    svg.append("g")
+                      .call(d3.axisLeft(y));
 
+                    
                   // Give these new data to update line
                   line
                       .datum(dataFilter)
