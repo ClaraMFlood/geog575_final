@@ -8,7 +8,7 @@
 		});
 
 		$("#allcrimeDialog").dialog({
-			//autoOpen: false, //changed
+			autoOpen: false, 
             width: (window.innerWidth * .8), //changed
             height: (window.innerHeight *.8) //changed
 		});
@@ -505,7 +505,7 @@
 
         focus.append("rect")
             .attr("class", "tooltip")
-            .attr("width", 120)
+            .attr("width", 200)
             .attr("height", 50)
             .attr("x", 10)
             .attr("y", -22)
@@ -524,7 +524,7 @@
 
         focus.append("text")
             .attr("class", "tooltip-crime")
-            .attr("x", 85)
+            .attr("x", 105)
             .attr("y", 18);
 
         svg.append("rect")
