@@ -104,9 +104,43 @@ h3 {
 .info:hover {
 	text-decoration: underline;;
 }
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 2px;
+
+
+
+/* line graph tool tips */
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
 
+.line {
+    fill: none;
+    
+    stroke-width: 1.5px;
+}
+
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+
+.focus circle {
+    fill: black;
+}
+
+.focus text {
+    font-size: 14px;
+}
+
+.tooltip {
+    fill: white;
+    stroke: #000;
+}
+
+.tooltip-date, .tooltip-crime {
+    font-weight: bold;
+}
+
+/* end line graph tool tips */
