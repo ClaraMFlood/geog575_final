@@ -135,12 +135,37 @@ h3 {
 }
 
 .tooltip {
-    fill: white;
+    fill: black;
     stroke: #000;
+    min-width: 50px;
+    opacity: 0.8;
 }
 
-.tooltip-date, .tooltip-crime {
-    font-weight: bold;
+
+.tooltip-date, .tooltip-name, .tooltip-crime {
+    fill: white;
 }
 
 /* end line graph tool tips */
+
+/*bubblegraph*/
+  
+  div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    min-width: 60px;					
+    min-height: 20px;					
+    padding: 4px;				
+    font-family: 1.2vw 'Avenir' sans-serif;
+    color: white;
+    background: black;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+  }
+
+text {
+    cursor: default;
+}
+
+/*end bubblegraph*/

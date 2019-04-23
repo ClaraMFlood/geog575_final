@@ -8,7 +8,7 @@
 		});
 
 		$("#allcrimeDialog").dialog({
-			autoOpen: false, 
+			//autoOpen: false, 
             width: (window.innerWidth * .8), //changed
             height: (window.innerHeight *.8) //changed
 		});
@@ -63,7 +63,7 @@
 		function create(data) {
 			narcotics = L.Proj.geoJson(data, {
 				pointToLayer: function(feature, latlng) {
-					//			console.log(feature);
+					
 					return L.circleMarker(latlng, {
 						fillColor: '#B84E14',
 						color: '#341809',
@@ -118,437 +118,290 @@
            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         
-        var crime16 = {
-                "children": [{"Crime":"Narcotics","Year":"2016","Count":16345}, {"Crime":"Homicides","Year":"2016","Count":193},{"Crime":"Assault","Year":"2016","Count":22234},{"Crime":"Burglary","Year":"2016","Count":13048},{"Crime":"Arson","Year":"2016","Count":536},{"Crime":"Alcohol Related","Year":"2016","Count":4126},
-                {"Crime":"Federal Offense","Year":"2016","Count":676},
-                {"Crime":"Misc. Felonies","Year":"2016","Count":3171},
-                {"Crime":"Sex Offense","Year":"2016","Count":2662}, {"Crime":"Gambling","Year":"2016","Count":27},
-                {"Crime":"Grand Theft Auto","Year":"2016","Count":12885},
-                {"Crime":"Mentally Ill","Year":"2016","Count":3770}, {"Crime":"Robbery","Year":"2016","Count":40539}, {"Crime":"Suicide","Year":"2016","Count":1025}, {"Crime":"Vagrancy","Year":"2016","Count":384}, {"Crime":"Vandalism","Year":"2016","Count":12597},
-                {"Crime":"Vehicle Laws","Year":"2016","Count":21693},
-                {"Crime":"Weapon Laws","Year":"2016","Count":3685}]
-            };
+        var allCrimes = ["Alcohol Incidents", "Arson Incidents", "Homicides", "Burglaries", "Fed. Offenses", "Gambling", "Grand Theft Auto", "Homicides", "Mentally Ill", "Misc. Felonies", "Narcotics", "Robberies", "Sex Offenses", "Suicides", "Vagrancy Incidents", "Vandalism Incidents", "Vehicle Laws", "Weapon Laws", "Total Crimes"];
+        var allYears = ["2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016"];
+        var firstExpressed = allCrimes[0],
+            secondExpressed = allCrimes[1],
+            width = (window.innerWidth * .77),
+            height = (window.innerHeight * .77),
+            firstBubble = allYears[0];
+        //var secondExpressed = allCrimes[17];
+
+        //functions
+        createBubbleDropdown(width, height);
+        loadBubble(width, height, firstBubble);
+        lineGraph(firstExpressed, width, height);
+        createLineDropdown(width, height);
+        
+        function createBubbleDropdown(width, height){
+            //add select element
+            var dropdown = d3.select("#menuHolder")
+                .append("select")
+                .attr("class", "dropdown")
+                .on("change", function(){
+                    loadBubble(width, height, this.value)
+                });
+
+            //add initial option
+            var titleOption = dropdown.append("option")
+                .attr("class", "titleOption")
+                .attr("disabled", "true")
+                .text("Select Year");
+
+            //add attribute name options
+            var attrOptions = dropdown.selectAll("attrOptions")
+                .data(allYears)
+                .enter()
+                .append("option")
+                .attr("value", function(d){ return d })
+                .text(function(d){ return d });
+        };
     
-        var crime15 = {
-                "children": [{"Crime":"Narcotics","Year":"2015","Count":14644}, {"Crime":"Homicides","Year":"2015","Count":178},{"Crime":"Assault","Year":"2015","Count":20990},{"Crime":"Burglary","Year":"2015","Count":12971},{"Crime":"Arson","Year":"2015","Count":477},{"Crime":"Alcohol Related","Year":"2015","Count":4001},
-                {"Crime":"Federal Offense","Year":"2015","Count":493},
-                {"Crime":"Misc. Felonies","Year":"2015","Count":3369},
-                {"Crime":"Sex Offense","Year":"2015","Count":2183}, {"Crime":"Gambling","Year":"2015","Count":15},
-                {"Crime":"Grand Theft Auto","Year":"2015","Count":12221},
-                {"Crime":"Mentally Ill","Year":"2015","Count":3754}, {"Crime":"Robbery","Year":"2015","Count":37720}, {"Crime":"Suicide","Year":"2015","Count":1041}, {"Crime":"Vagrancy","Year":"2015","Count":429}, {"Crime":"Vandalism","Year":"2015","Count":11686},
-                {"Crime":"Vehicle Laws","Year":"2015","Count":21875},
-                {"Crime":"Weapon Laws","Year":"2015","Count":3380}]
-            };
-        
-        var crime14 = {
-                "children": [{"Crime":"Narcotics","Year":"2014","Count":14644}, {"Crime":"Homicides","Year":"2014","Count":178},{"Crime":"Assault","Year":"2014","Count":20990},{"Crime":"Burglary","Year":"2014","Count":12971},{"Crime":"Arson","Year":"2014","Count":477},{"Crime":"Alcohol Related","Year":"2014","Count":4001},
-                {"Crime":"Federal Offense","Year":"2014","Count":493},
-                {"Crime":"Misc. Felonies","Year":"2014","Count":3369},
-                {"Crime":"Sex Offense","Year":"2014","Count":2183}, {"Crime":"Gambling","Year":"2014","Count":15},
-                {"Crime":"Grand Theft Auto","Year":"2014","Count":12221},
-                {"Crime":"Mentally Ill","Year":"2014","Count":3754}, {"Crime":"Robbery","Year":"2014","Count":37720}, {"Crime":"Suicide","Year":"2014","Count":1041}, {"Crime":"Vagrancy","Year":"2014","Count":429}, {"Crime":"Vandalism","Year":"2014","Count":11686},
-                {"Crime":"Vehicle Laws","Year":"2014","Count":21875},
-                {"Crime":"Weapon Laws","Year":"2014","Count":3380}]
-            };
-        
-        window.onload = setCharts();
-        var allCrimes = ["Alcohol Related Incidents", "Arson Incidents", "Homicides", "Burglaries", "Fed. Offenses", "Gambling", "Grand Theft Auto", "Homicides", "Mentally Ill", "Misc. Felonies", "Narcotics", "Robberies", "Sex Offenses", "Suicides", "Vagrancy Incidents", "Vandalism Incidents", "Vehicle Laws", "Weapon Laws", "Total Crimes"];
-        
-        var firstExpressed = allCrimes[18];
-        console.log("here");
-        console.log(firstExpressed);
-        
-        function setCharts(){
-            d3.queue()
-            .defer(d3.csv, "data/data.csv")
-            .await(callback);
+        function loadBubble(width, height, attribute){
+            d3.select(".bubbleChart")
+                .remove();
             
-            function callback(error, csvData){
-                lineGraph(csvData, firstExpressed);
-                createLineDropdown(csvData);
-            }
-        }
-        
-    var allArray = [crime14, crime15, crime16],
-    attrArray = ["2016", "2015", "2014"],
-        lineArray = ["Alcohol Related", "Homicides"];
-        
-       
-    setBubble(crime16);
-    createDropdown(allArray);
+            var svg = d3.select("#bubbleHolder").append("svg")
+                .attr("class", "bubbleChart")
+                .attr("width", width)
+                .attr("height", height);
 
-    function setBubble(dataset){
-            var diameter = (window.innerWidth * .5);
+            // Define the div for the tooltip
+            var div = d3.select("#bubbleHolder").append("div")	
+                .attr("class", "tooltip")				
+                .style("opacity", 0);
 
-            var color = d3.scaleOrdinal()
-                .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410", "#451410"]);
-
-            var bubble = d3.pack(dataset)
-                .size([diameter, diameter])
+            var pack = d3.pack()
+                .size([width-150, height])
                 .padding(1.5);
 
-            var svg = d3.select("#bubbleHolder")
-                .append("svg")
-                .attr("width", diameter)
-                .attr("height", diameter)
-                .attr("class", "bubble");
-            
-            var bubbleTitle = svg.append("text")
-                .attr("x", 10)
-                .attr("y", 20)
-                .attr("class", "bubbleTitle");
-        
-            var bubbleTitle = d3.select(".bubbleTitle")
-                .text(dataset.children[0].Year)
+            d3.csv("data/data2.csv", function(d) {
+              d.value = +d[attribute]; //so if you're able to make this be an attribute fed into the function, such as expresssed selected from dropdown, this should be able to update dynamically
+              d.Crime = d["Crime"] 
 
-            var nodes = d3.hierarchy(dataset)
-                .sum(function(d) { return d.Count; });
+                return d;
+            }, function(error, data) {
+              if (error) throw error;
 
-            var node = svg.selectAll(".node")
-                .data(bubble(nodes).descendants())
-                .enter()
-                .filter(function(d){
-                    return  !d.children
-                })
-                .append("g")
-                .attr("class", "node")
-                .attr("transform", function(d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
 
-            node.append("title")
-                .text(function(d) {
-                    return d.Crime + ": " + d.Count;
-                });
-
-            node.append("circle")
-                .attr("r", function(d) {
-                    return d.r;
-                })
-                .style("fill", function(d,i) {
-                    return color(i);
-                });
-
-            node.append("text")
-                .attr("dy", ".2em")
-                .style("text-anchor", "middle")
-                .text(function(d) {
-                    return d.data.Crime.substring(0, d.r / 1.5);
-                })
-                .attr("font-family", "sans-serif")
-                .attr("font-size", function(d){
-                    return d.r/5;
-                })
-                .attr("fill", "white");
-
-            node.append("text")
-                .attr("dy", "1.3em")
-                .style("text-anchor", "middle")
-                .text(function(d) {
-                    return numberWithCommas(d.data.Count);
-                })
-                .attr("font-family",  "Gill Sans", "Gill Sans MT")
-                .attr("font-size", function(d){
-                    return d.r/5;
-                })
-                .attr("fill", "white");
-
-            d3.select(self.frameElement)
-                .style("height", diameter + "px");
-    }
-        
-
-    function createDropdown(allArray){
-        //add select element
-        var dropdown = d3.select("#menuHolder")
-            .append("select")
-            .attr("class", "dropdown")
-            .on("change", function(){
-                //console.log(this.value);
-                getValue(this.value, allArray)
-            });
-
-        //add initial option
-        var titleOption = dropdown.append("option")
-            .attr("class", "titleOption")
-            .attr("disabled", "true")
-            .text("Select Year");
-
-        //add attribute name options
-        var attrOptions = dropdown.selectAll("attrOptions")
-            .data(attrArray)
-            .enter()
-            .append("option")
-            .attr("value", function(d){ return d })
-            .text(function(d){ return d });
-    };
-        
-    function getValue (year, allArray){
-    for (var i=0; i<allArray.length; i++){
-        var crimeArray = allArray[i]; //holds value of individual crime arrays
-        var testYear = crimeArray.children[0].Year; //holds value of year associated with the crime array
-        if (testYear == year){ //if year of array is equal to year from dropdown, run update function on that array
-            updateBubble(crimeArray);
-        };
-    };
-};
-    
-        
-    function updateBubble (dataset){
-              // transition
-      var t = d3.transition()
-          .duration(750);
-
-        
-        d3.select(".bubble")
-            .remove();
-        
-        //console.log(dataset.children[0].Year);
-            var diameter = (window.innerWidth * .5);
-
-            var color = d3.scaleOrdinal()
+                //set color of bubble chart
+              var myColor = d3.scaleOrdinal()
+                .domain(data.map(function(d){ return d.Crime;}))
                 .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410"]);
 
-            var bubble = d3.pack(dataset)
-                .size([diameter, diameter])
-                .padding(1.5);
+              var root = d3.hierarchy({children: data})
+                  .sum(function(d) { return d.value; })
+                    .sort(function(a, b) {
+                        return -(a.value - b.value); //this organizes the chart so larges is in center. Removing sort function makes it sort randomly
+                    });
 
-            var svg = d3.select("#bubbleHolder")
-                .append("svg")
-                .attr("width", diameter)
-                .attr("height", diameter)
-                .attr("class", "bubble");
-            
-            var bubbleTitle = svg.append("text")
-                .attr("x", 10)
-                .attr("y", 20)
-                .attr("class", "bubbleTitle");
+              var node = svg.selectAll(".node")
+                    .data(pack(root).leaves())
+                    .enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+
+              node.append("circle")
+                    .attr("id", function(d) { return d.id; })
+                    .attr("r", function(d) { return d.r; })
+                    .style("fill", function(d) { return myColor(d.data.Crime); })
+                    .on("mouseover", function(d) {		
+                        div.transition()		
+                        .duration(200)		
+                        .style("opacity", .8);	
+
+                        var duration = 300;
+                        data.forEach(function(d, i) {
+                            //console.log(d.value);
+                            node.transition().duration(duration).delay(i * duration)
+                            .attr("r", d.value);
+                        });
+
+                        div.html(d.data.Crime + ": " + numberWithCommas(d.data.value)  )	//this line originall div.html(d.data.Crime + ": <br>"+d.data.value  )
+                        .style("left", (d3.event.pageX - 150) + "px")		
+                        .style("top", (d3.event.pageY - 70) + "px");	
+                    })					
+                    .on("mouseout", function(d) {		
+                        div.transition()		
+                        .duration(500)		
+                        .style("opacity", 0);	
+                    });
+
+                node.append("text")
+                    .style("text-anchor", "middle")
+                    .text(function(d) {
+                        //if you don't want some of the circles populated with text, specify constraints below
+                        if (d.data.value > 748|| d.data.Crime == "Other" || d.data.Crime == "Fire"){
+                        return d.data.Crime;
+                        }
+                        return "";})
+                    .attr("font-size", function(d){
+                        return d.r/6;
+                    })
+                    .attr("fill", "white");
+            });
+        };//end loadBubble
         
-            var bubbleTitle = d3.select(".bubbleTitle")
-                .text(dataset.children[0].Year)
+        
+        function createLineDropdown(width, height){
+            //add select element
+            var dropdown = d3.select("#linebuttonHolder")
+                .append("select")
+                .attr("class", "dropdown")
+                .on("change", function(){
+                    updateLine(this.value, width, height)
+                });
 
-            var nodes = d3.hierarchy(dataset)
-                .sum(function(d) { return d.Count; });
+            //add initial option
+            var titleOption = dropdown.append("option")
+                .attr("class", "titleOption")
+                .attr("disabled", "true")
+                .text("Select Crime");
 
-            var node = svg.selectAll(".node")
-                .data(bubble(nodes).descendants())
+            //add attribute name options
+            var attrOptions = dropdown.selectAll("attrOptions")
+                .data(allCrimes)
                 .enter()
-                .filter(function(d){
-                    return  !d.children
-                })
-                .append("g")
-                .attr("class", "node")
-                .attr("transform", function(d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
-
-            node.append("title")
-                .text(function(d) {
-                    return d.Crime + ": " + d.Count;
-                });
-
-            node.append("circle")
-                .attr("r", function(d) {
-                    return d.r;
-                })
-                .transition(t)
-                .style("fill", function(d,i) {
-                    return color(i);
-                });
-
-            node.append("text")
-                .attr("dy", ".2em")
-                .style("text-anchor", "middle")
-                .transition(t)
-                .text(function(d) {
-                    return d.data.Crime.substring(0, d.r / 3);
-                })
-                .attr("font-family", "sans-serif")
-                .attr("font-size", function(d){
-                    return d.r/5;
-                })
-                .attr("fill", "white");
-
-            node.append("text")
-                .attr("dy", "1.3em")
-                .style("text-anchor", "middle")
-                .transition(t)
-                .text(function(d) {
-                    return numberWithCommas(d.data.Count);
-                })
-                .attr("font-family",  "Gill Sans", "Gill Sans MT")
-                .attr("font-size", function(d){
-                    return d.r/5;
-                })
-                .attr("fill", "white");
-
-            d3.select(self.frameElement)
-                .style("height", diameter + "px");
-    };
+                .append("option")
+                .attr("value", function(d){ return d })
+                .text(function(d){ return d });
+        };
         
-
-//    var allGroup = ["HOMICIDE", "BURGLARY", "NARCOTICS"]
+        function updateLine(attribute, width, height){
+            d3.select(".lineChart")
+                .remove();
+            var attr = attribute;           
+            lineGraph(attr, width, height);
+        } //close updateLine
     
-    function createLineDropdown(csvData){
-        //add select element
-        var dropdown = d3.select("#linebuttonHolder")
-            .append("select")
-            .attr("class", "dropdown")
-            .on("change", function(){
-                updateLine(csvData, this.value)
+        //lineGraph function does not work with callback. If you use callback, you can only run the function once, any subsequent runs do not work
+        function lineGraph(attribute, width, height){
+             var expressed = attribute;
+             var myColor = d3.scaleOrdinal()
+                      .domain(allCrimes)
+                      .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410"]);
+
+            var margin = { top: 100, right: 120, bottom: 100, left: 50 },
+            width = width - margin.left - margin.right,
+            height = height - margin.top - margin.bottom,
+            tooltip = { width: 100, height: 100, x: 10, y: -30 };
+
+            var parseDate = d3.timeParse("%m/%e/%Y"),
+                bisectDate = d3.bisector(function(d) { return d.date; }).left,
+                formatValue = d3.format(","),
+                dateFormatter = d3.timeFormat("%Y");
+
+            var x = d3.scaleTime()
+                    .range([0, width]);
+
+            var y = d3.scaleLinear()
+                    .range([height, 0]);
+
+            var svg = d3.select("#lineHolder").append("svg")
+                .attr("class", "lineChart")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+            var line = d3.line()
+                .x(function(d) { return x(d.date); })
+                .y(function(d) { return y(d[expressed]); });
+
+            d3.csv("data/data.csv", function(error, data) {
+                if (error) throw error;
+            
+            data.forEach(function(d) {
+                d.date = parseDate(d.date);
+                d[expressed] = +d[expressed];
             });
 
-        //add initial option
-        var titleOption = dropdown.append("option")
-            .attr("class", "titleOption")
-            .attr("disabled", "true")
-            .text("Select Crime");
+            data.sort(function(a, b) {
+                return a.date - b.date;
+            });
 
-        //add attribute name options
-        var attrOptions = dropdown.selectAll("attrOptions")
-            .data(allCrimes)
-            .enter()
-            .append("option")
-            .attr("value", function(d){ return d })
-            .text(function(d){ return d });
-    };
-        
-    function updateLine(data, attribute){
-        
-        
-        d3.select(".lineChart")
-            .remove();
-        
-        lineGraph(data, attribute);
-    }
-    
-    function lineGraph(data, attribute){
-         
-         var expressed = attribute;
-        console.log("here2")
-        console.log(expressed);
-        
-         
-         var myColor = d3.scaleOrdinal()
-                  .domain(allCrimes)
-                  .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410"]);
-        
-        var margin = { top: 30, right: 120, bottom: 30, left: 50 },
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom,
-        tooltip = { width: 100, height: 100, x: 10, y: -30 };
+            x.domain([data[0].date, data[data.length - 1].date]);
+            y.domain(d3.extent(data, function(d) { return d[expressed]; }));
 
-        var parseDate = d3.timeParse("%m/%e/%Y"),
-            bisectDate = d3.bisector(function(d) { return d.date; }).left,
-            formatValue = d3.format(","),
-            dateFormatter = d3.timeFormat("%Y");
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x)
+                  .tickFormat(dateFormatter));
 
-        var x = d3.scaleTime()
-                .range([0, width]);
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(d3.axisLeft(y))
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Number of" + expressed);
 
-        var y = d3.scaleLinear()
-                .range([height, 0]);
+            svg.append("path")
+                .datum(data)
+                .transition() //note, does this even work?
+                .duration(1000)
+                .attr("class", "line")
+                .attr("d", line)
+                .attr("stroke", function(d){ return myColor("Total Crimes") });
 
-        var svg = d3.select("#lineHolder").append("svg")
-            .attr("class", "lineChart")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var focus = svg.append("g")
+                .attr("class", "focus")
+                .style("display", "none");
 
+            focus.append("circle")
+                .attr("r", 5);
 
-        var line = d3.line()
-            .x(function(d) { return x(d.date); })
-            .y(function(d) { return y(d[expressed]); });
+            focus.append("rect")
+                .attr("class", "tooltip")
+                .attr("width", 200)
+                .attr("height", 50)
+                .attr("x", 10)
+                .attr("y", -22)
+                .attr("rx", 4)
+                .attr("ry", 4);
 
+            focus.append("text")
+                .attr("class", "tooltip-date")
+                .attr("x", 18)
+                .attr("y", -2);
 
-        data.forEach(function(d) {
-            d.date = parseDate(d.date);
-            d[expressed] = +d[expressed];
-        });
+            focus.append("text")
+                .attr("class", "tooltip-name")
+                .attr("x", 18)
+                .attr("y", 18)
+                .text(expressed + ":");
 
-        data.sort(function(a, b) {
-            return a.date - b.date;
-        });
+            focus.append("text")
+                .attr("class", "tooltip-crime")
+                .attr("x", 150)
+                .attr("y", 18);
 
-        x.domain([data[0].date, data[data.length - 1].date]);
-        y.domain(d3.extent(data, function(d) { return d[expressed]; }));
+            svg.append("rect")
+                .attr("class", "overlay")
+                .attr("width", width)
+                .attr("height", height)
+                .on("mouseover", function() { focus.style("display", null); })
+                .on("mouseout", function() { focus.style("display", "none"); })
+                .on("mousemove", mousemove);
 
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x)
-              .tickFormat(dateFormatter));
+                function mousemove() {
+                    var x0 = x.invert(d3.mouse(this)[0]),
+                        i = bisectDate(data, x0, 1),
+                        d0 = data[i - 1],
+                        d1 = data[i],
+                        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+                    focus.attr("transform", "translate(" + x(d.date) + "," + y(d[expressed]) + ")");
 
-        svg.append("g")
-            .attr("class", "y axis")
-            .call(d3.axisLeft(y))
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .text("Number of" + expressed);
-
-        svg.append("path")
-            .datum(data)
-            .attr("class", "line")
-            .attr("d", line)
-            .attr("stroke", function(d){ return myColor("Total Crimes") });
-
-        var focus = svg.append("g")
-            .attr("class", "focus")
-            .style("display", "none");
-
-        focus.append("circle")
-            .attr("r", 5);
-
-        focus.append("rect")
-            .attr("class", "tooltip")
-            .attr("width", 200)
-            .attr("height", 50)
-            .attr("x", 10)
-            .attr("y", -22)
-            .attr("rx", 4)
-            .attr("ry", 4);
-
-        focus.append("text")
-            .attr("class", "tooltip-date")
-            .attr("x", 18)
-            .attr("y", -2);
-
-        focus.append("text")
-            .attr("x", 18)
-            .attr("y", 18)
-            .text(expressed + ":");
-
-        focus.append("text")
-            .attr("class", "tooltip-crime")
-            .attr("x", 105)
-            .attr("y", 18);
-
-        svg.append("rect")
-            .attr("class", "overlay")
-            .attr("width", width)
-            .attr("height", height)
-            .on("mouseover", function() { focus.style("display", null); })
-            .on("mouseout", function() { focus.style("display", "none"); })
-            .on("mousemove", mousemove);
-
-            function mousemove() {
-                var x0 = x.invert(d3.mouse(this)[0]),
-                    i = bisectDate(data, x0, 1),
-                    d0 = data[i - 1],
-                    d1 = data[i],
-                    d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-                focus.attr("transform", "translate(" + x(d.date) + "," + y(d[expressed]) + ")");
-
-                focus.select(".tooltip-date").text(dateFormatter(d.date));
-                focus.select(".tooltip-crime").text(formatValue(d[expressed]))
-            }; //mousemove close           
-    
-    }; // lineGraph close
+                    focus.select(".tooltip-date").text(dateFormatter(d.date));
+                    focus.select(".tooltip-crime").text(formatValue(d[expressed]))
+                }; //mousemove close           
+                })
+        }; // lineGraph close
         
         
 }); //all wrapper function close
-
