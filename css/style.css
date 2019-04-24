@@ -166,6 +166,25 @@ h3 {
 
 text {
     cursor: default;
-}
+
+
 
 /*end bubblegraph*/
+
+.container {
+  margin-top: 20px;
+}
+
+.panel {
+  background-color: white;
+}
+
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
