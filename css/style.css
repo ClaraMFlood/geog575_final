@@ -105,6 +105,31 @@ h3 {
 	text-decoration: underline;;
 }
 
+.container {
+  margin-top: 20px;
+}
+
+.panel {
+  background-color: white;
+}
+
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+
+/* modal styling */
+
+#allcrimeDialog {
+    background-color: lightgray;
+}
+
 
 
 /* line graph tool tips */
@@ -166,25 +191,24 @@ h3 {
 
 text {
     cursor: default;
-
-
+    font-family: 
+}
 
 /*end bubblegraph*/
 
-.container {
-  margin-top: 20px;
+/* modal titles */
+
+#titleHolder, #menuHolder, #linebuttonHolder {
+    text-align: center;
+    padding-bottom: 10px;
+    font-weight: bold;
 }
 
-.panel {
-  background-color: white;
+#titleHolder2{
+    margin-top: 100px;
+    text-align: center;
 }
 
-.axis path {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
+/* end modal titles */
 
-.bar {
-  fill: steelblue;
-}
+

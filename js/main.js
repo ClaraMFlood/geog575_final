@@ -9,8 +9,8 @@
 
 		$("#allcrimeDialog").dialog({
 			//autoOpen: false, 
-            width: (window.innerWidth * .8), //changed
-            height: (window.innerHeight *.8) //changed
+            width: (window.innerWidth * .6), //changed
+            height: (window.innerHeight *.6) //changed
 		});
 		$("#burgDialog").dialog({
 			autoOpen: false
@@ -118,12 +118,12 @@
            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         
-        var allCrimes = ["Alcohol Incidents", "Arson Incidents", "Homicides", "Burglaries", "Fed. Offenses", "Gambling", "Grand Theft Auto", "Homicides", "Mentally Ill", "Misc. Felonies", "Narcotics", "Robberies", "Sex Offenses", "Suicides", "Vagrancy Incidents", "Vandalism Incidents", "Vehicle Laws", "Weapon Laws", "Total Crimes"];
+        var allCrimes = ["Alcohol Incidents", "Arson Incidents", "Assaults", "Burglaries", "Fed. Offenses", "Gambling", "Grand Theft Auto", "Homicides", "Mentally Ill", "Misc. Felonies", "Narcotics", "Robberies", "Sex Offenses", "Suicides", "Vagrancy Incidents", "Vandalism", "Vehicle Laws", "Weapon Laws", "Total Crimes"];
         var allYears = ["2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016"];
         var firstExpressed = allCrimes[0],
             secondExpressed = allCrimes[1],
-            width = (window.innerWidth * .77),
-            height = (window.innerHeight * .77),
+            width = (window.innerWidth * .57),
+            height = (window.innerHeight * .57),
             firstBubble = allYears[0];
         //var secondExpressed = allCrimes[17];
 
@@ -132,7 +132,7 @@
         loadBubble(width, height, firstBubble);
         lineGraph(firstExpressed, width, height);
         createLineDropdown(width, height);
-        groupedBars()
+        //groupedBars()
         
         function createBubbleDropdown(width, height){
             //add select element
@@ -159,6 +159,11 @@
         };
     
         function loadBubble(width, height, attribute){
+            
+            var margin = { top: 20, right: 10, bottom: 100, left: 10 },
+                width = width - margin.left - margin.right,
+                height = height - margin.top - margin.bottom
+                 
             var t = d3.transition()
                 .duration(1000);
             
@@ -178,9 +183,11 @@
             var pack = d3.pack()
                 .size([width-150, height])
                 .padding(1.5);
+            
+    
 
             d3.csv("data/data2.csv", function(d) {
-              d.value = +d[attribute]; //so if you're able to make this be an attribute fed into the function, such as expresssed selected from dropdown, this should be able to update dynamically
+              d.value = +d[attribute]; 
               d.Crime = d["Crime"] 
 
                 return d;
@@ -191,7 +198,7 @@
                 //set color of bubble chart
               var myColor = d3.scaleOrdinal()
                 .domain(data.map(function(d){ return d.Crime;}))
-                .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410"]);
+                .range(["#78c679", "#41ab5d", "#238443", "#006837", "#00552d", "#004529", "#002214"]);
 
               var root = d3.hierarchy({children: data})
                   .sum(function(d) { return d.value; })
@@ -222,9 +229,10 @@
                             .attr("r", d.value);
                         });
 
-                        div.html(d.data.Crime + ": " + numberWithCommas(d.data.value)  )	//this line originall div.html(d.data.Crime + ": <br>"+d.data.value  )
-                        .style("left", (d3.event.pageX - 150) + "px")		
-                        .style("top", (d3.event.pageY - 70) + "px");	
+                        div.html(d.data.Crime + ": " + numberWithCommas(d.data.value)  )	
+                        .style("left", (d3.event.pageX - 250) + "px")	
+                        .style("top", (d3.event.pageY - 170) + "px")
+                        .style("font-family", "Avenir", "sans-serif");	
                     })					
                     .on("mouseout", function(d) {		
                         div.transition()		
@@ -242,9 +250,14 @@
                         }
                         return "";})
                     .attr("font-size", function(d){
-                        return d.r/6;
+                        return d.r/5;
                     })
-                    .attr("fill", "white");
+                    .attr("fill", "#e4e4e4")
+                    .style("font-family", "Avenir", "sans-serif")
+                    .style("letter-spacing", "1px")
+                    .style("font-weight", "bold");
+                
+                 
             });
         };//end loadBubble
         
@@ -285,11 +298,11 @@
              var expressed = attribute;
              var myColor = d3.scaleOrdinal()
                       .domain(allCrimes)
-                      .range(["#ff8880", "#a62c23", "#8c251D", "#661b15", "#4d1410"]);
+                      .range(["#78c679", "#41ab5d", "#238443", "#006837", "#00552d", "#004529", "#002214"]);
 
-            var margin = { top: 100, right: 120, bottom: 100, left: 50 },
+            var margin = { top: 20, right: 200, bottom: 100, left: 50 },
             width = width - margin.left - margin.right,
-            height = height - margin.top - margin.bottom,
+            height = height - 100 - margin.bottom,
             tooltip = { width: 100, height: 100, x: 10, y: -30 };
 
             var parseDate = d3.timeParse("%m/%e/%Y"),
@@ -330,11 +343,7 @@
             x.domain([data[0].date, data[data.length - 1].date]);
             y.domain(d3.extent(data, function(d) { return d[expressed]; }));
 
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x)
-                  .tickFormat(dateFormatter));
+            
 
             svg.append("g")
                 .attr("class", "y axis")
@@ -345,14 +354,38 @@
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
                 .text("Number of" + expressed);
+                
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x)
+                  .tickFormat(dateFormatter));
+                
+            d3.select("path")
+                .style("opacity", 0)
+                .transition() 
+                    .duration(1000)
+                    .style("opacity", 1)
+            
+            d3.selectAll("line")
+                .style("opacity", 0)
+                .transition() 
+                    .duration(1000)
+                    .style("opacity", 1)
+            
+            
 
             svg.append("path")
                 .datum(data)
-                .transition() //note, does this even work?
-                .duration(1000)
+                .style("opacity", .0)
+                .transition() 
+                    .duration(1000)
+                    .style("opacity", 1)
                 .attr("class", "line")
                 .attr("d", line)
-                .attr("stroke", function(d){ return myColor("Total Crimes") });
+                
+                .attr("stroke", function(d){ return myColor("Total Crimes") })
+                .style("stroke-width", "3px");
 
             var focus = svg.append("g")
                 .attr("class", "focus")
