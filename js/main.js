@@ -6,6 +6,9 @@ var allCrimes = ["Alcohol Incidents", "Arson Incidents", "Assaults",
 ];
 
 $(document).ready(function() {
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
 
 	$('.allcrimeInfo').click(function() {
 		if ($('#allcrimeDialog').dialog('isOpen')) {
@@ -256,8 +259,8 @@ $(document).ready(function() {
 				.style("stroke", "red")
 				.style("stroke-width", "2");
 			$('#infoBar').html(dropDownChoices[props.indexOf(expressed)] + ': ' +
-				properties[
-					expressed]);
+				numberWithCommas(properties[
+					expressed]));
 			$('#infoBar').removeClass('no-show');
 		};
 
