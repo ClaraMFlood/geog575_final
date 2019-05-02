@@ -9,7 +9,7 @@ $(document).ready(function() {
   var firstExpressed = allCrimes[0],
     secondExpressed = allCrimes[1],
     width = (window.innerWidth * .57),
-    height = (window.innerHeight * .57),
+    height = (window.innerHeight * .8),
     firstBubble = allYears[0];
 
   //functions
