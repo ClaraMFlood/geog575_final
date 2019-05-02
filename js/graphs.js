@@ -480,7 +480,7 @@ $(document).ready(function() {
       var svg = d3.select(".graph").append("svg")
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom)
-          .style("background","url(img/regions.jpg)")
+          .style("background","url(img/regions.JPG)")
           .style("background-size","400px 400px")
           .style("background-position", "center")
           .style("background-repeat","no-repeat")

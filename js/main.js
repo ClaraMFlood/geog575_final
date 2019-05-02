@@ -174,10 +174,21 @@ $(document).ready(function() {
 	jqueryInit();
 
 	function createPolice() {
-		d3.json("data/Sheriff_and_Police_Stations.json", function(data) {
-			police = L.geoJSON(data).addTo(policeGroup);
-		});
-	}
+        d3.json("data/Sheriff_and_Police_Stations.json", function(data) {
+            police = L.geoJSON(data, {
+                pointToLayer: function(feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 8,
+                        fillColor: '#64D5CA',
+                        color: "#38A89D",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    })
+                }
+            }).addTo(policeGroup);
+        });
+    }
 
 	function createTopo() {
 		var csv;
