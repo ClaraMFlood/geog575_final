@@ -1,84 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Final</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Angeles Crime</title>
 
-	<!--[if IE]>
-		<script src="html5shiv.googlecode.com/svn/trunk/html5.js">
-		</script>
-		<![endif]-->
-
-		<!--stylesheets-->
-<link rel="stylesheet" href="css/leaflet.css">
-<link rel="stylesheet" href="css/jquery-ui.css">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css?family=Alfa Slab One" rel="stylesheet">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Alfa Slab One" rel="stylesheet">
 </head>
 <body>
 
     <div id="bar">
-    <div class="crimeTitle">Crime Information</div>
-    <div class="allcrimeInfo info">All Crime Information</div>
-    <div class="burgInfo info">Burglary Information</div>
-    <div class="homInfo info">Homicide Information</div>
-  </div>
-		<div id="map"></div>
+    <div class="crimeTitle"><span class="bolder">Los Angeles</span><br>Crime Spotter<br>2016</div>
+    <div class='catTitle'>Graphs/Charts</div>
+    <div class="info allcrimeInfo">All Crime Over Time</div>
+    <div class="info catcrimeInfo">Individual Crime Over Time</div>
+    <div class="info regcrimeInfo">Crimes Per Region</div>
+    <div class='catTitle'>Layers</div>
+    <div class='info all16 activeYear'>All Crimes</div>
+    <div class="info narc16">Narcotics</div>
+    <div class="info burg16">Burglary</div>
+    <div class="info hom16">Homicide</div>
+    <div class="info police">Sheriff and Police Stations</div>
+    <div class="info dem16">Crimes &amp; Demographics</div>
+    <div class='dem info'><select id="demSelect"><option selected disabled>Demographic</option></select></div>
+    </div>
+    <div id='infoBar' class='no-show'></div>
+    <div id="map"></div>
 
-    <div id="allcrimeDialog" title="All Crime Information">
-      <p></p>
-        <div id="titleHolder"><h3>All Crime Categories Over Time</h3></div>
+    <div id="allcrimeDialog" title="Crime Statistics">
+      <div id="titleHolder"><h3>All Crime Categories Over Time</h3></div>
         <div id="menuHolder"></div>
         <div id="bubbleHolder"></div>
-        
-        <div id="titleHolder2"><h3>Individual Crime Categories Over Time</h3></div>
-        <div id="linebuttonHolder"></div>
-        <div id="lineHolder"></div>
-        
-          <div class="container">
-            <div class="row">
-              <div class="col-md-4">
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                    <form role="form" class="categories">
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-8">
-                <div class="graph"></div>
-              </div>
-            </div>
-          </div>
-        
-        
     </div>
 
-    <div id="burgDialog" title="Burglary Information">
-  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
+    <div id="catcrimeDialog" title="Crime Statistics">
+    <div id="titleHolder2"><h3>Individual Crime Categories Over Time</h3></div>
+    <div id="linebuttonHolder"></div>
+    <div id="lineHolder"></div>
+    </div>
 
-<div id="homDialog" title="Homicide Information">
-  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
+    <div id="regcrimeDialog" title="Crime Statistics">
+        <div id="titleHolder2"><h3>Total Crimes and Demographic Statistics per Region (2016)</h3></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form style="columns:3" role="form" class="categories">
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="graph"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
- 
-		<!--scripts-->
-    <script type="text/javascript" src="lib/d3.v4.min.js"></script>
-		<script src="js/jquery.js"></script>
-    <script src="js/touchpunch.js"></script>
+
+      <div id="openingDialog">
+          <h4>Explore The Spatial Distribution of Crimes and Demographics in L.A. County, CA</h4>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;This map was designed to allow you, the user, to explore where and how frequently different types of crimes occur in Los Angeles County, California, for the year 2016. There are several layers and tools designed to assist you in this process. You can zoom in and out of the map to explore areas in more detail by using the + and – buttons in the upper right corner, or by scrolling with your scroll wheel or track pad. You can also click and drag the map around, in order to move the focus of the map to a new area. </p>
+          <p>
+            &nbsp;&nbsp;&nbsp;&nbsp;Six layers are provided, which you can turn on and of by clicking on their titles (orange indicates the layer is active and displaying, while white indicates it is off). Among these is a heatmap showing the frequency of all crimes that occur throughout the county, as well as three supplemental heatmaps that focus on three crimes of particular interest, including narcotic, burglaries and homicides. Additionally, there is a layer identifying the location of police stations, and lastly, there is a layer that you can use to choose what variable displays, among a list of specific crime categories or specific demographics. When this layer displays, you can mouse over an area in order to get more detailed information.</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;There are also several charts that accompany this application, and display how the quantity of types of crimes has varied over time, from 2005 – 2016, as well as a chart directly comparing crimes to demographics spatially. These charts can beaccessed through the links above the layers titled Statistics (or whatever we chooseto name the 3 modal links).</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;Enjoy exploring!</p>
+            <div class='okayButton'>Let's Go</div>
+        </div>
+    
+    <!--scripts-->
+	<script src="js/jquery.js"></script>
     <script src="js/jquery-ui.min.js"></script>
-   <script src="js/leaflet.js"></script>
-    <script src="js/proj4.js"></script>
-    <script src="js/proj.js"></script>
+    <script>
+    $("#openingDialog").dialog({
+      autoOpen: true,
+      width: 700, //changed
+      height: 600 //changed
+    });
+    $('.okayButton').click(function(){
+      $("#openingDialog").dialog('close');
+    })
+    $("#allcrimeDialog").dialog({
+    	autoOpen: false,
+      width: window.innerWidth * .6, //changed
+      height: window.innerHeight * .6 //changed
+    });
+    $("#catcrimeDialog").dialog({
+    	autoOpen: false,
+      width: window.innerWidth * .6, //changed
+      height: window.innerHeight * .6 //changed
+    });
+    $("#regcrimeDialog").dialog({
+    	autoOpen: false,
+      width: (window.innerWidth * .6), //changed
+      height: (window.innerHeight * .6) //changed
+    });
+    </script>
+    <script src="js/d3.v4.min.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/topo.js"></script>
+    <script src="js/touchpunch.js"></script>
+    <script src="js/leaflet.js"></script>
     <script src="js/heat.js"></script>
-     <script src="lib/d3-scale-chromatic.js"></script>
-    <script src="lib/d3-scale-chromatic.min.js"></script>
-		<script src="js/main.js"></script>
-    
-   
-    
+	<script src="js/main.js"></script>
+    <script src="js/graphs.js"></script>
 	</body>
-	</html>
+</html>

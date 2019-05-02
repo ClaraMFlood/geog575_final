@@ -1,3 +1,8 @@
+html, body, #map {
+	height: 100%;
+	width: 100%;
+}
+
 	body {
 	font-family: sans-serif;
 	background-color: #D4EDF7;
@@ -6,16 +11,33 @@
 	}
 
  #bar {
-	 width: 200px;
+	 width: 250px;
 	 float: left;
 	 background-color: #347B98;
-		border-radius: 15px;
+	 border-radius: 15px;
 	 text-align: center;
 	 margin-top: 15px;
 	 margin-left: 15px;
-	 height: 150px;
+	 height: 420px;
 	 z-index: 10;
 	 position: absolute;
+ }
+
+ #infoBar {
+	width: 250px;
+	float: left;
+	background-color: #347B98;
+	border-radius: 15px;
+	text-align: center;
+	margin-top: 400px;
+	margin-left: 15px;
+	height: 20px;
+	padding-top: 8px;
+	padding-bottom: 5px;
+	color: #FAAD63;
+	font-size: 110%;
+	z-index: 10;
+	position: absolute;
  }
 
 	#map {
@@ -76,7 +98,7 @@ h3 {
 }
 
 .buttons > li:hover {
-	background-color: grey;
+	background-color: #F1F5F8;
 }
 
 .buttons > .home {
@@ -90,49 +112,117 @@ h3 {
 }
 
 .crimeTitle {
-	color: white;
+	color: #FAAD63;
+	font-weight: bold;
 	margin-bottom: 20px;
 	margin-top: 20px;
 	font-size: 130%;
 }
 
+.bolder {
+	font-size: 160%;
+}
+
 .info {
 	color: white;
+	margin-bottom: 5px;
+}
+
+.hom16, .burg16, .narc16, .all16, .dem16, .police{
+	margin-left: 10px;
+	margin-right: 10px;
 	margin-bottom: 10px;
+	cursor: pointer;
+	display: inline-block;
 }
 
-.info:hover {
-	text-decoration: underline;;
+.hom16:hover, .burg16:hover, .narc16:hover, .all16:hover, .dem16:hover, .police:hover {
+	color: #B8C2CC;
 }
 
-.container {
-  margin-top: 20px;
+.okayButton {
+	border-radius: 30px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-right: 200px;
+    background-color: #F6993F;
+    text-align: center;
+    margin-left: 200px;
+		color: #22292F;
+		cursor: pointer;
+}
+.okayButton:hover {
+	background-color: #FAAD63;
 }
 
-.panel {
-  background-color: white;
+.activeYear {
+	color: #F6993F !important;
 }
 
-.axis path {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+.catTitle{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	color: #22292F;
+	font-variant: petite-caps;
 }
 
-.bar {
-  fill: steelblue;
+.allcrimeInfo, .catcrimeInfo, .regcrimeInfo{
+	margin-left: 10px;
+	top: 1px;
+	position: relative;
+	margin-bottom: 5px;
 }
 
+.allcrimeInfo:hover, .catcrimeInfo:hover, .regcrimeInfo:hover {
+    color: #4DC0B5;
+    cursor: pointer;
+}
+
+.demSelect{
+	background-color: #347B98;
+    border: 0;
+    color: white;
+}
+
+.leaflet-overlay-pane svg path{
+    pointer-events: auto;
+}
+
+.no-show {
+	display: none;
+}
+
+.dem16Layer {
+	z-index: 1;
+	opacity: .3;
+}
+
+.leaflet-map-pane canvas {
+	z-index: 10;
+}
 
 /* modal styling */
 
-#allcrimeDialog {
-    background-color: lightgray;
+#titleHolder, #menuHolder, #linebuttonHolder {
+    text-align: center;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+#titleHolder2{
+    margin-top: 10px;
+    text-align: center;
 }
 
 
-
 /* line graph tool tips */
+
+.regionGraph {
+	background-image: url(img/regions.JPG);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: right;
+}
 
 .axis path, .axis line {
     fill: none;
@@ -142,7 +232,6 @@ h3 {
 
 .line {
     fill: none;
-    
     stroke-width: 1.5px;
 }
 
@@ -174,41 +263,24 @@ h3 {
 /* end line graph tool tips */
 
 /*bubblegraph*/
-  
-  div.tooltip {	
-    position: absolute;			
-    text-align: center;			
-    min-width: 60px;					
-    min-height: 20px;					
-    padding: 4px;				
+
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    min-width: 60px;
+    min-height: 20px;
+    padding: 4px;
     font-family: 1.2vw 'Avenir' sans-serif;
     color: white;
-    background: black;	
-    border: 0px;		
-    border-radius: 8px;			
-    pointer-events: none;			
+    background: black;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
   }
 
 text {
     cursor: default;
-    font-family: 
+    font-family:
 }
 
 /*end bubblegraph*/
-
-/* modal titles */
-
-#titleHolder, #menuHolder, #linebuttonHolder {
-    text-align: center;
-    padding-bottom: 10px;
-    font-weight: bold;
-}
-
-#titleHolder2{
-    margin-top: 100px;
-    text-align: center;
-}
-
-/* end modal titles */
-
-
