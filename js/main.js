@@ -1,3 +1,6 @@
+//Sheet by Clara Margaret Flood, Douglas Keeble, and Maritza Reyes 2019
+
+
 var allCrimes = ["Alcohol Incidents", "Arson Incidents", "Assaults",
 	"Burglaries", "Fed. Offenses", "Gambling", "Grand Theft Auto",
 	"Homicides", "Mentally Ill", "Misc. Felonies", "Narcotics",
@@ -426,16 +429,7 @@ $(document).ready(function() {
 					map.removeLayer(element.heatmap);
 				} else {
 					$(this).toggleClass('activeYear');
-					// map.eachLayer(function(layer) {
-					// 	console.log(layer);
-					// 	if (!(layer._url ==
-					// 			'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-					// 		) &&
-					// 		!(layer.options.clickable == true) && !(layer._leaflet_id == 114)
-					// 	) {
-					// 		map.removeLayer(layer);
-					// 	}
-					// });
+					
 					layerList.forEach(function(el2) {
 						if (map.hasLayer(el2.heatmap)) {
 							map.removeLayer(el2.heatmap);

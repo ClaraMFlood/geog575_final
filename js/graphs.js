@@ -1,3 +1,5 @@
+//Sheet by Clara Margaret Flood, Douglas Keeble, and Maritza Reyes 2019
+
 $(document).ready(function() {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -138,7 +140,6 @@ $(document).ready(function() {
 
           var duration = 300;
           data.forEach(function(d, i) {
-            //console.log(d.value);
             node.transition().duration(duration).delay(i *
                 duration)
               .attr("r", d.value);
@@ -489,13 +490,13 @@ $(document).ready(function() {
 
       d3.select('.categories').selectAll('.category').on('change', function() {
          var x = d3.select('.categories').selectAll('.category:checked');
-          //console.log("x>>>>>>>>>>>>>>", x._groups)
+          
           var ids = [];
           for(var i=0; i<x._groups[0].length; i++) {
               ids = [...ids, x._groups[0][i].id]
-              //console.log(x._groups[0][i])
+              
           }
-              // console.log('>>>>>>>>>>>>>>>>>>>>>>', ids)
+              
         updateGraph(ids);
           });
 
